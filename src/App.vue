@@ -1,63 +1,57 @@
 <script>
 export default {
-    methods: {
-        addItem: function () {
-            console.log('add')
-            let newInput = document.createElement("input");
-            newInput.setAttribute("type", "text");
-            newInput.setAttribute("placeholder", "Input item");
-
-            let newInputItem = document.createElement("div");
-            newInputItem.classList.add("input_item");
-
-            let newRemoveWrapper = document.createElement("div");
-            newRemoveWrapper.classList.add("remove_wrapper");
-
-            let newInputRemove = document.createElement("div");
-            newInputRemove.classList.add("input_remove");
-            console.log(1)
-            newInputRemove.setAttribute("@click", "removeItem")
-            console.log(2)
-            
-            newRemoveWrapper.appendChild(newInputRemove)
-            
-            let newSpan = document.createElement('span');
-            newSpan.innerHTML = '+';
-
-            newInputRemove.appendChild(newSpan);
-
-            newInputItem.appendChild(newRemoveWrapper)
-            newInputItem.appendChild(newInput)
-            document.querySelector(".input_box").appendChild(newInputItem);
+  data() {
+    return {
+      items: [
+        {
+          id: this.generateId(),
+          placeholder: 'Input text',
         },
-
-        removeItem: function (e) {
-            console.log('remove')
-            e.target.parentElement.remove();
-        },
+      ],
+    };
+  },
+  methods: {
+    generateId() {
+      return new Date().getTime().toString(36);
     },
+    addItem() {
+      this.items.push({
+        placeholder: 'Input text',
+        id: this.generateId(),
+      });
+    },
+    removeItem(id) {
+      this.items = this.items.filter((item) => {
+        let result = item.id === id;
+        return !result;
+      });
+    },
+  },
 };
 </script>
 
 <template>
-    <div class="container">
-        <div class="inputs_wrapper">
-            <div class="input_box">
-                <div class="input_item">
-                    <div class="remove_wrapper">
-                        <div class="input_remove" @click="removeItem">
-                            <span>+</span>
-                        </div>
-                    </div>
-                    <input type="text" placeholder="Input item" />
-                </div>
+  <div class="container">
+    <div class="inputs_wrapper">
+      <div class="input_box">
+        <div v-for="item in items" :key="item.id" class="input_item">
+          <div class="remove_wrapper">
+            <div class="input_remove" v-if="items.length > 1" @click="removeItem(item.id)">
+              <span>+</span>
             </div>
-            <div class="input_button" @click="addItem">+</div>
+          </div>
+          <!-- <input type="text" v-model="item.placeholder" /> -->
+          <input type="text" placeholder="Input text" />
         </div>
-        <div class="run_random">
-            <div class="start_button">Start</div>
-        </div>
+      </div>
+      <div class="input_button" @click="addItem">
+        +
+      </div>
     </div>
+    <div class="run_random">
+      <div class="start_button">Start</div>
+    </div>
+  </div>
 </template>
 
 <style lang="scss">
