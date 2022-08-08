@@ -1,64 +1,87 @@
+<script setup>
+import spin from "./components/spin.vue";
+</script>
 <script>
 export default {
-  data() {
-    return {
-      items: [
-        {
-          id: this.generateId(),
-          placeholder: 'Input text',
+    components: { spin },
+    data() {
+        return {
+            items: [
+                {
+                    content: "",
+                    id: this.generateId(),
+                },
+            ],
+            showSpin: false,
+        };
+    },
+    methods: {
+		close(){
+			console.log('batya')
+		},
+        generateId() {
+            return new Date().getTime().toString(36);
         },
-      ],
-    };
-  },
-  methods: {
-    generateId() {
-      return new Date().getTime().toString(36);
+        addItem() {
+            this.items.push({
+                content: "",
+                id: this.generateId(),
+            });
+        },
+        removeItem(id) {
+            this.items = this.items.filter((item) => {
+                let result = item.id === id;
+                return !result;
+            });
+        },
     },
-    addItem() {
-      this.items.push({
-        placeholder: 'Input text',
-        id: this.generateId(),
-      });
-    },
-    removeItem(id) {
-      this.items = this.items.filter((item) => {
-        let result = item.id === id;
-        return !result;
-      });
-    },
-  },
 };
 </script>
 
 <template>
-  <div class="container">
-    <div class="inputs_wrapper">
-      <div class="input_box">
-        <div v-for="item in items" :key="item.id" class="input_item">
-          <div class="remove_wrapper">
-            <div class="input_remove" v-if="items.length > 1" @click="removeItem(item.id)">
-              <span>+</span>
+    <div class="container">
+        <div class="inputs_wrapper">
+            <div class="input_box">
+                <div v-for="item in items" :key="item.id" class="input_item">
+                    <div class="remove_wrapper">
+                        <div
+                            class="input_remove"
+                            v-if="items.length > 1"
+                            @click="removeItem(item.id)"
+                        >
+                            <span>+</span>
+                        </div>
+                    </div>
+                    <input type="text" v-model="item.content" />
+                </div>
+            	<div class="input_button" @click="addItem">+</div>
             </div>
-          </div>
-          <!-- <input type="text" v-model="item.placeholder" /> -->
-          <input type="text" placeholder="Input text" />
+			<div class="run_random">
+				<div class="start_button" @click="showSpin = true">Start</div>
+			</div>
         </div>
-      </div>
-      <div class="input_button" @click="addItem">
-        +
-      </div>
+		<spin :list="items" v-show="showSpin" v-model="showSpin"/>
     </div>
-    <div class="run_random">
-      <div class="start_button">Start</div>
-    </div>
-  </div>
 </template>
 
 <style lang="scss">
+.container{
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	width: 90%;
+	max-width: 800px;
+	& > *{
+		width: 50%;
+	}
+}
 .inputs_wrapper {
-    position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 .input_box {
+	position: relative;
     .input_item {
         position: relative;
         .remove_wrapper {
